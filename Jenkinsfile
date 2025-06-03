@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage ('Checkstyle') {
             when {
-                changeRequest()
+                changeRequest() //main pipeline
             }
             steps {
                 sh './mvnw checkstyle:checkstyle'
@@ -55,6 +55,8 @@ pipeline {
                 REGISTRY = credentials('nexus_url_main')
             }
             steps {
+                echo "${env.CHANGE_ID}, ${env.BRANCH_NAME}"
+
                 script {
                     def GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
                     echo "Git commit short is ${GIT_COMMIT_SHORT}"
