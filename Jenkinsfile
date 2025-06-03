@@ -5,10 +5,11 @@ pipeline {
     }
     stages {
         stage ('Checkstyle') {
-            when {
-                changeRequest()
-            }
+            // when {
+            //     changeRequest()
+            // }
             steps {
+                echo "${env.CHANGE_ID}, ${env.BRANCH_NAME}"
                 sh './mvnw checkstyle:checkstyle'
             }
             post {
@@ -18,29 +19,33 @@ pipeline {
             }
         }
         stage ('Test') {
-            when {
-                changeRequest()
-            }
+            // when {
+            //     changeRequest()
+            // }
             steps {
+                echo "${env.CHANGE_ID}, ${env.BRANCH_NAME}"
                 sh './mvnw test -B'
             }
         }
         stage ('Build') {
-            when {
-                changeRequest()
-            }
+            // when {
+            //     changeRequest()
+            // }
             steps {
+                echo "${env.CHANGE_ID}, ${env.BRANCH_NAME}"
                 sh './mvnw clean package -DskipTests'
             }
         }
         stage ('Docker Push to MR') {
-            when {
-                changeRequest()
-            }
+            // when {
+            //     changeRequest()
+            // }
             environment {
                 REGISTRY = credentials('nexus_url_main')
             }
             steps {
+                echo "${env.CHANGE_ID}, ${env.BRANCH_NAME}"
+
                 script {
                     def GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
                     echo "Git commit short is ${GIT_COMMIT_SHORT}"
@@ -49,12 +54,14 @@ pipeline {
         }
         stage ('Docker Push to Main') {
             when {
-                branch 'main'
+                branch 'main' // add comment to test pr
             }
             environment {
                 REGISTRY = credentials('nexus_url_main')
             }
             steps {
+                echo "${env.CHANGE_ID}, ${env.BRANCH_NAME}"
+
                 script {
                     def GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
                     echo "Git commit short is ${GIT_COMMIT_SHORT}"
