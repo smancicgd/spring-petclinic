@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     def GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
-                    echo "Git commit short is ${GIT_COMMIT_SHORT}"
+                    echo "Git commit is ${GIT_COMMIT_SHORT}"
                 }
             }
         }
