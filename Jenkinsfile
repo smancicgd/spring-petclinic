@@ -37,6 +37,12 @@ pipeline {
             }
         }
         stage ('Push docker image') {
+            when {
+                anyOf {
+                    expression { return env.CHANGE_ID != null}
+                    branch 'main'
+                }
+            }
             environment {
                 REPO = "${env.CHANGE_ID != null ? 'mr' : 'main'}"
                 
