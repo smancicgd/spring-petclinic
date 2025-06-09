@@ -1,9 +1,9 @@
 pipeline {
     agent { label 'pipeline-agent' } 
     environment {
-        // IS_PR = env.CHANGE_ID != null
         REPO = "${env.CHANGE_ID ? 'mr' : 'main'}"
         IMAGE = credentials('docker_image_name')
+        GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
     }
     stages {
         stage ('Checkstyle') {
@@ -37,10 +37,7 @@ pipeline {
         }
         stage ('Push docker image') {
             steps {
-                script {
-                    def GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
-                    echo "Git commit is ${GIT_COMMIT_SHORT}"
-                }
+                echo "commit short ${GIT_COMMIT_SHORT} ${REPO} ${env.CHANGE_ID} ${env.BRANCH_NAME}"
             }
         }
     }
