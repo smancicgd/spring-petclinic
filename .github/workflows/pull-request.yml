@@ -1,0 +1,65 @@
+name: Pull Request Pipeline
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  checkstyle:
+    runs-on: ubuntu-latest
+    container: maven:3.8.5-openjdk-17
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Generate checkstyle report
+      run: mvn checkstyle:checkstyle
+    - name: Upload checkstyle report 
+      uses: actions/upload-artifact@v4
+      with:
+        name: checkstyle-report
+        path: target/checkstyle-result.xml
+
+  test:
+    runs-on: ubuntu-latest
+
+    #macos-latest
+    container: maven:3.8.5-openjdk-17
+
+    # services:
+    #   postgres:
+    #     image: postgres:17.0
+    #     ports: 
+    #         - 5432:5432
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Test code with Maven
+        run: mvn test -B 
+
+  build:
+    runs-on: ubuntu-latest
+    container: maven:3.8.5-openjdk-17
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build code w/ Maven
+        run: ./mvnw clean package -DskipTests
+
+  create_docker_image:
+    needs: [checkstyle, test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build and Push Docker Image to Docker Hub
+        uses: ./.github/actions/build-push-docker-image
+        with:
+          docker-repository: 'mr'
+          image-tag: ${{ github.sha }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}

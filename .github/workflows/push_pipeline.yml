@@ -1,0 +1,22 @@
+name: Push to main pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  create_docker_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build and Push Docker Image to Docker Hub
+        uses: ./.github/actions/build-push-docker-image
+        with:
+          docker-repository: 'main'
+          image-tag: 'latest'
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+        

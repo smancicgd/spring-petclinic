@@ -1,14 +1,10 @@
 pipeline {
     agent { label 'pipeline-agent' } 
-    environment {
-        REPO = "${env.CHANGE_ID ? 'mr' : 'main'}"
-        IMAGE = credentials('docker_image_name')
-        GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
-    }
+    
     stages {
         stage ('Checkstyle') {
             when {
-                expression { return env.CHANGE_ID != null}
+                expression { return env.CHANGE_ID != null }
             }
             steps {
                 sh './mvnw checkstyle:checkstyle'
@@ -21,7 +17,7 @@ pipeline {
         }
         stage ('Test') {
             when {
-                expression { return env.CHANGE_ID != null}
+                expression { return env.CHANGE_ID != null }
             }
             steps {
                 sh './mvnw test -B'
@@ -29,15 +25,34 @@ pipeline {
         }
         stage ('Build') {
             when {
-                expression { return env.CHANGE_ID != null}
+                expression { return env.CHANGE_ID != null }
             }
             steps {
                 sh './mvnw clean package -DskipTests'
             }
         }
-        stage ('Push docker image') {
+        stage ('Create a docker image') {
+            when {
+                anyOf {
+                    expression { return env.CHANGE_ID != null }
+                    branch 'main'
+                }
+            }
+
+            environment {
+                REPO = "${env.CHANGE_ID != null ? 'mr' : 'main'}"
+                GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
+                IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'latest' : GIT_COMMIT_SHORT}"
+            }
+
             steps {
-                echo "commit short ${GIT_COMMIT_SHORT} ${REPO} ${env.CHANGE_ID} ${env.BRANCH_NAME}"
+                script {
+                    withCredentials([usernamePassword(credentialsId: "docker", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "docker build -t ${DOCKER_USER}/${REPO}:${IMAGE_TAG} -f Dockerfile.multistage ."
+                        sh "docker login -u $DOCKER_USER -p $DOCKER_PASS"
+                        sh "docker push ${DOCKER_USER}/${REPO}:${IMAGE_TAG}"
+                    }
+                }
             }
         }
     }
