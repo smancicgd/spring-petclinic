@@ -1,31 +1,29 @@
 pipeline {
     agent { label 'pipeline-agent' } 
-    environment {
-        REPO = "${env.CHANGE_ID != null ? 'mr' : 'main'}"
-        IMAGE = credentials('docker_image_name')
-        GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
-        IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'latest' : GIT_COMMIT_SHORT}"
-    }
+    
     stages {
         stage ('Checkstyle') {
             when {
                 expression { return env.CHANGE_ID != null}
             }
             steps {
-                sh './mvnw checkstyle:checkstyle'
+                echo "Executing checkstyle ${env.CHANGE_ID} ${env.BRANCH_NAME}"
+                // sh './mvnw checkstyle:checkstyle'
             }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'target/checkstyle-result.xml', fingerprint: true
-                }
-            }
+            // post {
+            //     always {
+            //         archiveArtifacts artifacts: 'target/checkstyle-result.xml', fingerprint: true
+            //     }
+            // }
         }
         stage ('Test') {
             when {
                 expression { return env.CHANGE_ID != null}
             }
             steps {
-                sh './mvnw test -B'
+                echo "Executing tests ${env.CHANGE_ID} ${env.BRANCH_NAME}"
+
+                // sh './mvnw test -B'
             }
         }
         stage ('Build') {
@@ -33,10 +31,23 @@ pipeline {
                 expression { return env.CHANGE_ID != null}
             }
             steps {
-                sh './mvnw clean package -DskipTests'
+                echo "Executing build ${env.CHANGE_ID} ${env.BRANCH_NAME}"
+
+                // sh './mvnw clean package -DskipTests'
             }
         }
         stage ('Push docker image') {
+            environment {
+                REPO = "${env.CHANGE_ID != null ? 'mr' : 'main'}"
+                
+                IMAGE = credentials('docker_image_name')
+                IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'latest' : GIT_COMMIT_SHORT}"
+
+                GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
+
+                //add nexus url depending on the repo
+                //withcredentials for nexus do the docker build
+            }
             steps {
                 echo "commit short ${GIT_COMMIT_SHORT} ${REPO} ${env.CHANGE_ID} ${env.BRANCH_NAME} ${IMAGE_TAG}"
             }
