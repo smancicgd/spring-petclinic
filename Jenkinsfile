@@ -1,7 +1,7 @@
 pipeline {
     agent { label 'pipeline-agent' } 
     environment {
-        REPO = "${env.CHANGE_ID ? 'mr' : 'main'}"
+        REPO = "${env.CHANGE_ID != null ? 'mr' : 'main'}"
         IMAGE = credentials('docker_image_name')
         GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
     }
