@@ -14,4 +14,3 @@ logs:
 ps:
 	docker compose -f $(COMPOSE_FILE) ps
 
-restart: down up
