@@ -1,0 +1,44 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: Pull Request Pipeline
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  checkstyle:
+    runs-on: ubuntu-latest
+    container: maven:3.8.5-openjdk-17
+
+    steps: # add caching
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Generate checkstyle report
+      run: mvn checkstyle:checkstyle
+    - name: Upload checkstyle report 
+      uses: actions/upload-artifact@v4
+      with:
+        name: checkstyle-report
+        path: target/checkstyle/*
+
+  test:
+    needs: checkstyle
+    runs-on: ubuntu-latest
+    container: maven:3.8.5-openjdk-17
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Test code with Maven
+        run: mvn test -B
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    container: maven:3.8.5-openjdk-17
+
+    steps:
+      - name: Jobs are working
+      - run: echo 'checkstyle and test passing'
