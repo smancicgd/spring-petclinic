@@ -7,23 +7,20 @@ pipeline {
                 expression { return env.CHANGE_ID != null }
             }
             steps {
-                echo "Executing checkstyle ${env.CHANGE_ID} ${env.BRANCH_NAME}"
-                // sh './mvnw checkstyle:checkstyle'
+                sh './mvnw checkstyle:checkstyle'
             }
-            // post {
-            //     always {
-            //         archiveArtifacts artifacts: 'target/checkstyle-result.xml', fingerprint: true
-            //     }
-            // }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'target/checkstyle-result.xml', fingerprint: true
+                }
+            }
         }
         stage ('Test') {
             when {
                 expression { return env.CHANGE_ID != null }
             }
             steps {
-                echo "Executing tests ${env.CHANGE_ID} ${env.BRANCH_NAME}"
-
-                // sh './mvnw test -B'
+                sh './mvnw test -B'
             }
         }
         stage ('Build') {
@@ -31,12 +28,10 @@ pipeline {
                 expression { return env.CHANGE_ID != null }
             }
             steps {
-                echo "Executing build ${env.CHANGE_ID} ${env.BRANCH_NAME}"
-
-                // sh './mvnw clean package -DskipTests'
+                sh './mvnw clean package -DskipTests'
             }
         }
-        stage ('Push docker image') {
+        stage ('Create a docker image') {
             when {
                 anyOf {
                     expression { return env.CHANGE_ID != null }
@@ -57,7 +52,6 @@ pipeline {
                         sh "docker login -u $DOCKER_USER -p $DOCKER_PASS"
                         sh "docker push ${DOCKER_USER}/${REPO}:${IMAGE_TAG}"
                     }
-
                 }
             }
         }
