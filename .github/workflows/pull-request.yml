@@ -41,4 +41,4 @@ jobs:
 
     steps:
       - name: Jobs are working
-      - run: echo 'checkstyle and test passing'
+        run: echo 'checkstyle and test passing'
