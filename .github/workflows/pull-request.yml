@@ -17,7 +17,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     - name: Generate checkstyle report
-      run: mvn checkstyle:checkstyle
+      run: ./mvnw checkstyle:checkstyle
     - name: Upload checkstyle report 
       uses: actions/upload-artifact@v4
       with:
@@ -27,12 +27,14 @@ jobs:
   test:
     needs: checkstyle
     runs-on: ubuntu-latest
+    container: maven:3.8.5-openjdk-17
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Test code with Maven
-        run: mvn test -B
+        run: ./mvnw test -B
+        
   build:
     needs: test
     runs-on: ubuntu-latest
