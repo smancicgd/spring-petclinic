@@ -11,7 +11,7 @@ jobs:
 
   checkstyle:
     runs-on: ubuntu-latest
-    container: maven:3.8.5-openjdk-17
+    container: maven:3.8.5-openjdk-21
 
     steps: # add caching
     - name: Checkout repository
@@ -27,7 +27,7 @@ jobs:
   test:
     needs: checkstyle
     runs-on: ubuntu-latest
-    container: maven:3.8.5-openjdk-17
+    container: maven:3.8.5-openjdk-21
 
     steps:
       - name: Checkout repository
@@ -37,7 +37,7 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-    container: maven:3.8.5-openjdk-17
+    container: maven:3.8.5-openjdk-21
 
     steps:
       - name: Jobs are working
