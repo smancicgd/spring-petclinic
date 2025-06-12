@@ -11,15 +11,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Check commit sha 
-        run: echo ${{ github.sha }}
-
-      # - name: Build and Push Docker Image to Docker Hub
-      #   uses: ./.github/actions/build-push-docker-image
-      #   with:
-      #     docker-repository: 'main'
-      #     image-tag: 'latest'
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build and Push Docker Image to Docker Hub
+        uses: ./.github/actions/build-push-docker-image
+        with:
+          docker-repository: 'main'
+          image-tag: 'latest'
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
         
