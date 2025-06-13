@@ -19,7 +19,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: checkstyle-report
-        path: target/checkstyle-results.xml
+        path: target/checkstyle-result.xml
 
   test:
     runs-on: ubuntu-latest
