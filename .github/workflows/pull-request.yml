@@ -22,7 +22,6 @@ jobs:
         path: target/checkstyle-results.xml
 
   test:
-    needs: checkstyle
     runs-on: ubuntu-latest
     container: maven:3.8.5-openjdk-17
 
@@ -34,18 +33,17 @@ jobs:
         run: echo 'test job passing'
 
   build:
-    needs: test
     runs-on: ubuntu-latest
     container: maven:3.8.5-openjdk-17
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Jobs are working
-        run: echo 'build job passing'
+      - name: Build code w/ Maven
+        run: ./mvnw clean package -DskipTests
 
   create_docker_image:
-    needs: build
+    needs: [checkstyle, test, build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
