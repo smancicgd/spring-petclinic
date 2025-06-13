@@ -22,21 +22,22 @@ jobs:
         path: target/checkstyle-result.xml
 
   test:
-    runs-on: macos-latest
-    #ubuntu-latest
-    # container: maven:3.8.5-openjdk-17
+    runs-on: ubuntu-latest
+
+    #macos-latest
+    container: maven:3.8.5-openjdk-17
 
     # services:
     #   postgres:
     #     image: postgres:17.0
-    #     ports: 5432:5432
+    #     ports: 
+    #         - 5432:5432
         
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Test code with Maven
         run: mvn test -B 
-        # run: echo 'test job passing'
 
   build:
     runs-on: ubuntu-latest
