@@ -41,8 +41,9 @@ pipeline {
 
             environment {
                 REPO = "${env.CHANGE_ID != null ? 'mr' : 'main'}"
-                GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
-                IMAGE_TAG = "${env.BRANCH_NAME == 'main' ? 'latest' : GIT_COMMIT_SHORT}"
+                // GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
+                IMAGE_TAG = env.GIT_COMMIT.take(7)
+                //"${env.BRANCH_NAME == 'main' ? 'latest' : GIT_COMMIT_SHORT}"
             }
 
             steps {
