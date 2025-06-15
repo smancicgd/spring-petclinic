@@ -27,16 +27,36 @@ jobs:
     #macos-latest
     container: maven:3.8.5-openjdk-17
 
-    # services:
-    #   postgres:
-    #     image: postgres:17.0
-    #     ports: 
-    #         - 5432:5432
+    services:
+      postgres:
+        image: postgres:17.0
+        ports: 
+            - 5432:5432
+        env: 
+          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASS }}
+          POSTGRES_USER: ${{ secrets.DATABASE_USER }}
+          POSTGRES_DB: ${{ secrets.DATABASE }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
         
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Wait for PostgreSQL to be ready
+        run: until pg_isready -h localhost -p 5432; do sleep 1; done
+
       - name: Test code w/ Maven
+        env:
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          SPRING_PROFILES_ACTIVE: postgres
+          POSTGRES_URL: ${{ secrets.DATABASE_URL }}
+          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASS }}
+          POSTGRES_USER: ${{ secrets.DATABASE_USER }}
         run: ./mvnw test -B 
 
   build:
