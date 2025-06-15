@@ -36,8 +36,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Test code with Maven
-        run: mvn test -B 
+      - name: Test code w/ Maven
+        run: ./mvnw test -B 
 
   build:
     runs-on: ubuntu-latest

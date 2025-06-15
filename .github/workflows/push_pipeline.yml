@@ -15,7 +15,7 @@ jobs:
         uses: ./.github/actions/build-push-docker-image
         with:
           docker-repository: 'main'
-          image-tag: 'latest'
+          image-tag: ${{ github.sha }}
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
