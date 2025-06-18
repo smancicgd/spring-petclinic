@@ -3,7 +3,7 @@
 COMPOSE_FILE=docker-compose.yml
 
 up:
-	docker compose -f $(COMPOSE_FILE) --env-file .env up -d --build $(service) 
+	BUILDKIT_PROGRESS=plain docker compose -f $(COMPOSE_FILE) --env-file .env up -d --build $(service) 
 
 down:
 	docker compose -f $(COMPOSE_FILE) down $(service)
