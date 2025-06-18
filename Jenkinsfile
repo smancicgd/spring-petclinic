@@ -20,6 +20,12 @@ pipeline {
                 expression { return env.CHANGE_ID != null }
             }
             steps {
+                echo 'docker-compose version'
+                sh 'docker-compose version'
+                echo 'docker-compose up -d postgres'
+                sh 'docker-compose up -d postgres'
+                echo 'docker-compose ps'
+                sh 'docker-compose ps'
                 sh './mvnw test -X -B'
             }
         }
