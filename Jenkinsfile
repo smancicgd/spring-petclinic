@@ -19,8 +19,14 @@ pipeline {
             when {
                 expression { return env.CHANGE_ID != null }
             }
+            environment {
+                DATABASE_USER = credentials('DB_USER')
+                DATABASE_PASS = credentials('DB_PASS')
+                DATABASE = credentials('DB')
+                DATABASE_URL = credentials('DB_URL')
+            }
             steps {
-                sh './mvnw test -X -B  -Dspring.docker.compose.skip.in-tests=true'
+                sh './mvnw test -X -B'
             }
         }
         stage ('Build') {
