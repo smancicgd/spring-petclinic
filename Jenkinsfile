@@ -20,7 +20,7 @@ pipeline {
                 expression { return env.CHANGE_ID != null }
             }
             steps {
-                sh './mvnw test -X -B'
+                sh './mvnw test -X -B  -Dspring.docker.compose.skip.in-tests=true'
             }
         }
         stage ('Build') {
