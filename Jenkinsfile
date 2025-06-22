@@ -26,7 +26,9 @@ pipeline {
                 DATABASE_URL = credentials('DB_URL')
             }
             steps {
-                sh './mvnw clean test -X -B'
+                sh './mvnw clean test -X -Dspring.profiles.active=postgres \
+                    -Dspring.jpa.hibernate.ddl-auto=update \
+                    -Dspring.sql.init.mode=always -B'
             }
         }
         stage ('Build') {
