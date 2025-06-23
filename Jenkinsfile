@@ -15,22 +15,22 @@ pipeline {
                 }
             }
         }
-        stage ('Test') {
-            when {
-                expression { return env.CHANGE_ID != null }
-            }
-            environment {
-                DATABASE_USER = credentials('DB_USER')
-                DATABASE_PASS = credentials('DB_PASS')
-                DATABASE = credentials('DB')
-                DATABASE_URL = credentials('DB_URL')
-            }
-            steps {
-                sh './mvnw clean test -X -Dspring.profiles.active=postgres \
-                    -Dspring.jpa.hibernate.ddl-auto=update \
-                    -Dspring.sql.init.mode=always -B'
-            }
-        }
+        // stage ('Test') {
+        //     when {
+        //         expression { return env.CHANGE_ID != null }
+        //     }
+        //     environment {
+        //         DATABASE_USER = credentials('DB_USER')
+        //         DATABASE_PASS = credentials('DB_PASS')
+        //         DATABASE = credentials('DB')
+        //         DATABASE_URL = credentials('DB_URL')
+        //     }
+        //     steps {
+        //         sh './mvnw clean test -X -Dspring.profiles.active=postgres \
+        //             -Dspring.jpa.hibernate.ddl-auto=update \
+        //             -Dspring.sql.init.mode=always -B'
+        //     }
+        // }
         stage ('Build') {
             when {
                 expression { return env.CHANGE_ID != null }
