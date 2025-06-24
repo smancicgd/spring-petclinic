@@ -26,9 +26,7 @@ pipeline {
         //         DATABASE_URL = credentials('DB_URL')
         //     }
         //     steps {
-        //         sh './mvnw clean test -X -Dspring.profiles.active=postgres \
-        //             -Dspring.jpa.hibernate.ddl-auto=update \
-        //             -Dspring.sql.init.mode=always -B'
+        //         sh './mvnw clean test -X -Dspring.profiles.active=postgres -B'
         //     }
         // }
         stage ('Build') {
@@ -49,9 +47,7 @@ pipeline {
 
             environment {
                 REPO = "${env.CHANGE_ID != null ? 'mr' : 'main'}"
-                // GIT_COMMIT_SHORT = env.GIT_COMMIT.take(7)
                 IMAGE_TAG = env.GIT_COMMIT.take(7)
-                //"${env.BRANCH_NAME == 'main' ? 'latest' : GIT_COMMIT_SHORT}"
             }
 
             steps {
