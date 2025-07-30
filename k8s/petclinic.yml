@@ -29,8 +29,8 @@ spec:
         app: petclinic
     spec:
       containers:
-        - name: workload
-          image: dsyer/petclinic
+        - name: petclinic
+          image: smancic/main
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: postgres

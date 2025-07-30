@@ -1,0 +1,13 @@
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: petclinic
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: petclinic
+          __path__: /var/log/petclinic/app.log
+
+

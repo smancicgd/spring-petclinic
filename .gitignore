@@ -51,3 +51,4 @@ _site/
 !petclinic.css
 
 .env
+logs/
