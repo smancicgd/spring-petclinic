@@ -1,0 +1,14 @@
+petclinic:
+  name: petclinic
+  app: petclinic
+  replicas: 1
+  containerName: petclinic
+  image: smancic/main
+  containerPort: 8080
+service:
+  name: petclinic
+  app: petclinic
+  type: LoadBalancer
+  protocol: TCP
+  port: 8080
+  targetPort: 8080

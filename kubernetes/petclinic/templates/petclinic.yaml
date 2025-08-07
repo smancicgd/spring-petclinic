@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.petclinic.name }}
+  labels:
+    app: {{ .Values.petclinic.app }}
+spec:
+  replicas: {{ .Values.petclinic.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.petclinic.app }}
+  template:
+    metadata:
+      labels: 
+        app: {{ .Values.petclinic.app }}
+    spec:
+      containers:
+      - name: {{ .Values.petclinic.containerName }}
+        image: {{ .Values.petclinic.image }}
+        ports:
+        - containerPort: {{ .Values.petclinic.containerPort }}
